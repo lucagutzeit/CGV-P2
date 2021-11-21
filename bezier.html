@@ -23,8 +23,9 @@
 					     Math.floor(Math.random() * height));
 		}
 
-		var max_bezier_depth = 6;    // max recursion depth -> 2^depth segments
-		var num_points = 6;          // number of control/input point
+		var max_bezier_depth = 5;    // max recursion depth -> 2^depth segments
+		var num_points = 6;    
+		var t = 0.5      // number of control/input point
 		var CP = Array(num_points);
 		var line_width = 2;
 		var point_size = 8;
@@ -95,7 +96,7 @@
 						let pointA = point_layers[i-1][j];
 						let pointB = point_layers[i-1][j+1]
 
-						point_layers[i][j] = new P(0.5*(pointA.x+pointB.x), 0.5*(pointA.y+pointB.y));
+						point_layers[i][j] = new P(t*(pointA.x+pointB.x), t*(pointA.y+pointB.y));
 					}
 				}
 
