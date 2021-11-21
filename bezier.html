@@ -5,7 +5,7 @@
     <title>Canvas</title>    
 </head>
 <body>
-    <p style="text-align: center">Bezier4</p>
+    <p style="text-align: center">Bezier N</p>
     <canvas id="beziers" height="400">
 		Alternative content in case the browser 
 		does not support Canvas.
@@ -23,14 +23,14 @@
 					     Math.floor(Math.random() * height));
 		}
 
-		var max_bezier_depth = 5;    // max recursion depth -> 2^depth segments
-		var num_points = 4;          // number of control/input point
+		var max_bezier_depth = 6;    // max recursion depth -> 2^depth segments
+		var num_points = 6;          // number of control/input point
 		var CP = Array(num_points);
 		var line_width = 2;
-		var point_size = 4;
-		var back_color = '#206020';
-		var line_color = '#f0f0f0';
-		var point_color = '#d0d020';
+		var point_size = 8;
+		var back_color = '#dadada';
+		var line_color = '#0000a7';
+		var point_color = '#c50000';
 
         function draw() {
 			for (var i=0; i<num_points; i++) {
@@ -42,7 +42,8 @@
 				ctx.lineWidth = line_width;
 				ctx.strokeStyle = line_color;
 				bezier(CP);	
-
+				
+				// Stützpunkte zeichnen
 				for (var i=0; i<num_points; i++) {
 					point(CP[i]);
 				}
@@ -78,10 +79,41 @@
 			}
 		}
 
-		function bezier (points) {
-			if (points.length == 4) {
-				bezier4 (points[0], points[1], points[2], points[3], max_bezier_depth);
+		function bezierN (points, depth) {
+			if(depth === 0) {
+				line(points[0], points[points.length-1]);
+			} else {
+				var point_layers = Array(points.length);
+				point_layers[0] = points; 
+
+				for(var i=1; i<point_layers.length; i++) {
+					point_layers[i] = Array(points.length-i);
+				}
+
+				for (var i = 1; i<points.length; i++){
+					for(var j = 0; j<points.length-i; j++) {
+						let pointA = point_layers[i-1][j];
+						let pointB = point_layers[i-1][j+1]
+
+						point_layers[i][j] = new P(0.5*(pointA.x+pointB.x), 0.5*(pointA.y+pointB.y));
+					}
+				}
+
+				var new_points_left = Array(points.length);
+				var new_points_right = Array(points.length);
+				
+				for(var k = 0; k < points.length; k++) {
+					new_points_left[k] = point_layers[k][0];
+					new_points_right[new_points_right.length-1-k] = point_layers[k][point_layers[k].length-1];
+				}				
+
+				bezierN(new_points_left, depth-1);
+				bezierN(new_points_right, depth-1);
 			}
+		}
+
+		function bezier (points) {
+			bezierN(points, max_bezier_depth);
 		}
 
         function resizer() {
