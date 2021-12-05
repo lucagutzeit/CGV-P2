@@ -12,7 +12,7 @@
 		<p>Ändern des Parameters t im Intervall [0,1]: </p>
 		<div class="number_stepper">
 			<button id="decrement" onclick="stepper(this)"> - </button>
-			<input type="number" min="0.0" max="1.0" value="0.50" id="input-t" readonly>
+			<input type="number" min="0" max="1" value="0.50" id="input-t" readonly>
 			<button id="increment" onclick="stepper(this)"> + </button>
 		</div>
 	</div>
@@ -26,6 +26,7 @@
 		var canvas;
         var ctx;
 		const input_t = document.getElementById("input-t");
+		var t = input_t.getAttribute("value"); // number of control/input point
 		
 		function stepper(btn){
 			let id = btn.getAttribute("id");
@@ -38,11 +39,13 @@
 				input_t.setAttribute("value", newValue.toFixed(2));
 			}
 		}
+		console.log(t);
 
 		function P(x, y) {
 			this.x = x;
 			this.y = y;
 		}
+
 		function getRandomPoint(width, height) {			
 			return new P(Math.floor(Math.random() * width),
 					     Math.floor(Math.random() * height));
@@ -50,7 +53,7 @@
 
 		var max_bezier_depth = 5;    // max recursion depth -> 2^depth segments
 		var num_points = 6;    
-		var t = 0.5      // number of control/input point
+		//var t =  input_t.getAttribute("value");
 		var CP = Array(num_points);
 		var line_width = 2;
 		var point_size = 8;
@@ -147,7 +150,7 @@
         function resizer() {
             if (canvas.width != document.body.clientWidth) {
             canvas.width = document.body.clientWidth;
-            console.log(canvas.width, canvas.height);
+            //console.log(canvas.width, canvas.height);
             draw();
             }
         }
