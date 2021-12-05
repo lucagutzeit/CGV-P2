@@ -2,17 +2,42 @@
 <html style="margin:0 !important; padding: 0 !important">
 <head>
     <meta charset="utf-8" />
-    <title>Canvas</title>    
+    <title>Canvas</title>   
+	<link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <p style="text-align: center">Bezier N</p>
-    <canvas id="beziers" height="400">
-		Alternative content in case the browser 
+    <p class="title">Bezier N</p>
+
+	<div class="parameter_t">
+		<p>Ändern des Parameters t im Intervall [0,1]: </p>
+		<div class="number_stepper">
+			<button id="decrement" onclick="stepper(this)"> - </button>
+			<input type="number" min="0.0" max="1.0" value="0.50" id="input-t" readonly>
+			<button id="increment" onclick="stepper(this)"> + </button>
+		</div>
+	</div>
+
+	<canvas id="beziers" height="400">
+		Alternative content in case the browser 			
 		does not support Canvas.
 	</canvas>
+	
 	<script>
 		var canvas;
         var ctx;
+		const input_t = document.getElementById("input-t");
+		
+		function stepper(btn){
+			let id = btn.getAttribute("id");
+			let min = input_t.getAttribute("min");
+			let max = input_t.getAttribute("max");
+			let val = input_t.getAttribute("value");
+			let newValue = (id === "increment") ? (parseFloat(val) + 0.01) : (parseFloat(val) - 0.01);
+
+			if(newValue >= min && newValue <= max){
+				input_t.setAttribute("value", newValue.toFixed(2));
+			}
+		}
 
 		function P(x, y) {
 			this.x = x;
@@ -29,9 +54,10 @@
 		var CP = Array(num_points);
 		var line_width = 2;
 		var point_size = 8;
-		var back_color = '#dadada';
-		var line_color = '#0000a7';
-		var point_color = '#c50000';
+		var back_color = '#FDFDFD';
+		var stroke_color = '#256785'
+		var line_color = '#5FAFD2';
+		var point_color = '#DC6955';
 
         function draw() {
 			for (var i=0; i<num_points; i++) {
@@ -39,9 +65,10 @@
 			}
 			if (ctx) {
 				ctx.fillStyle = back_color;
+				ctx.strokeStyle = stroke_color;
 				ctx.fillRect(0, 0, canvas.width, canvas.height);	
+				ctx.strokeRect(0, 0, canvas.width, canvas.height);	
 				ctx.lineWidth = line_width;
-				ctx.strokeStyle = line_color;
 				bezier(CP);	
 				
 				// Stützpunkte zeichnen

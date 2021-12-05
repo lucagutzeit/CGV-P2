@@ -1,0 +1,53 @@
+*{
+    font-family: "Roboto";
+    font-weight: 400;
+    background-color: #FCFCFC;
+}
+
+.title{
+    text-align: center;
+    font-weight: 500;
+    margin-top: 25px;
+}
+
+.number_stepper{
+    position: fixed;
+    display: flex;
+    margin-left: 3.5rem;
+    background-color: #338eb6;
+    border-radius: 45px;
+
+}
+
+.parameter_t p{
+    margin-left: 5px;
+}
+
+input[type="number"]{
+    text-align: center;
+    border: none;
+    font-size:18px;
+    background-color: #338eb6;
+    color: #ffffff;
+}
+
+button{
+    color: #ffffff;
+    background-color: #338eb6;
+    border: none;
+    cursor: pointer;
+}
+#decrement{
+    font-size:28px;
+    padding: 15px 15px 15px 25px;
+    border-radius: 45px 0 0 45px;
+}
+#increment{
+    font-size:25px;
+    padding: 15px 25px 15px 5px;
+    border-radius: 0 45px 45px 0;
+}
+
+#beziers{
+    margin-top: 80px;
+}
