@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Canvas</title>   
 	<link rel="stylesheet" href="style.css"> 
+	<script src="bezier.js"></script>
 </head>
 <body>
     <p class="title">Bezier N</p>
@@ -21,156 +22,9 @@
 		Alternative content in case the browser 			
 		does not support Canvas.
 	</canvas>
-	
-	<script>
-		var canvas;
-        var ctx;
-		const input_t = document.getElementById("input-t");
-		var t = 0.33 ; // number of control/input point
-		
-		function stepper(btn){
-			let id = btn.getAttribute("id");
-			let min = input_t.getAttribute("min");
-			let max = input_t.getAttribute("max");
-			let val = input_t.getAttribute("value");
-			let newValue = (id === "increment") ? (parseFloat(val) + 0.01) : (parseFloat(val) - 0.01);
 
-			if(newValue >= min && newValue <= max){
-				input_t.setAttribute("value", newValue.toFixed(2));
-				t = newValue.toFixed(2);
-				console.log(t);
-				draw();
-			}
-		}
-
-		function P(x, y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		function getRandomPoint(width, height) {			
-			return new P(Math.floor(Math.random() * width),
-					     Math.floor(Math.random() * height));
-		}
-
-		var max_bezier_depth = 5;    // max recursion depth -> 2^depth segments
-		var num_points = 4;    
-		//var t =  input_t.getAttribute("value");
-		var CP = Array(num_points);
-		var line_width = 2;
-		var point_size = 8;
-		var back_color = '#FDFDFD';
-		var stroke_color = '#256785'
-		var line_color = '#5FAFD2';
-		var point_color = '#DC6955';
-
-        function draw() {
-			if (ctx) {
-				ctx.fillStyle = back_color;
-				ctx.strokeStyle = stroke_color;
-				ctx.fillRect(0, 0, canvas.width, canvas.height);	
-				ctx.strokeRect(0, 0, canvas.width, canvas.height);	
-				ctx.lineWidth = line_width;
-				bezier(CP);	
-				
-				// Stützpunkte zeichnen
-				for (var i=0; i<num_points; i++) {
-					point(CP[i]);
-				}
-			}
-		}
-
-		function point (P)
-		{
-			ctx.fillStyle = point_color;
-			ctx.fillRect(P.x-point_size/2,P.y-point_size/2,point_size,point_size);
-		}
-		function line (P0, P1) {
-			ctx.beginPath();
-			ctx.moveTo(P0.x, P0.y);
-			ctx.lineTo(P1.x, P1.y);
-			ctx.stroke();
-		}
-
-		function bezier4 (P0, P1, P2, P3, depth) {
-			if (depth === 0) line(P0, P3);
-			else {
-				var P01   = new P(0.5*(P0.x+P1.x), 0.5*(P0.y+P1.y));
-				var P12   = new P(0.5*(P1.x+P2.x), 0.5*(P1.y+P2.y));
-				var P23   = new P(0.5*(P2.x+P3.x), 0.5*(P2.y+P3.y));
-
-				var P012  = new P(0.5*(P01.x+P12.x), 0.5*(P01.y+P12.y));
-				var P123  = new P(0.5*(P12.x+P23.x), 0.5*(P12.y+P23.y));
-
-				var P0123 = new P(0.5*(P012.x+P123.x), 0.5*(P012.y+P123.y));
-			
-				bezier4(P0, P01, P012, P0123, depth-1);
-				bezier4(P0123, P123, P23, P3, depth-1);
-			}
-		}
-
-		function bezierN (points, depth) {
-			if(depth === 0) {
-				line(points[0], points[points.length-1]);
-			} else {
-				var point_layers = Array(points.length);
-				point_layers[0] = points; 
-
-				for(var i=1; i<point_layers.length; i++) {
-					point_layers[i] = Array(points.length-i);
-				}
-
-				for (var i = 1; i<points.length; i++){
-					for(var j = 0; j<points.length-i; j++) {
-						let pointA = point_layers[i-1][j];
-						let pointB = point_layers[i-1][j+1]
-
-						point_layers[i][j] = new P((t*pointA.x+(1-t)*pointB.x), (t*pointA.y+(1-t)*pointB.y));
-					}
-				}
-
-				var new_points_left = Array(points.length);
-				var new_points_right = Array(points.length);
-				
-				for(var k = 0; k < points.length; k++) {
-					new_points_left[k] = point_layers[k][0];
-					new_points_right[new_points_right.length-1-k] = point_layers[k][point_layers[k].length-1];
-				}				
-
-				bezierN(new_points_left, depth-1);
-				bezierN(new_points_right, depth-1);
-			}
-		}
-
-		function bezier (points) {
-			bezierN(points, max_bezier_depth);
-		}
-
-        function resizer() {
-            if (canvas.width != document.body.clientWidth) {
-            canvas.width = document.body.clientWidth;
-            //console.log(canvas.width, canvas.height);
-            draw();
-            }
-        }
-
-        window.addEventListener('load', function () {
-			canvas = document.getElementById('beziers');
-			// check for browser support
-			if (canvas && canvas.getContext) {
-                canvas.width = document.body.clientWidth; 
-				ctx = canvas.getContext('2d');
-                canvas.addEventListener('mousedown', draw, false);
-                window.addEventListener('resize', resizer, false);
-				if (ctx) {
-					for (var i=0; i<num_points; i++) {
-						CP[i] = getRandomPoint(canvas.width, canvas.height);
-					}
-					draw();
-				}
-			}
-		}, false);				
-		
-	</script>	
+	<button>Hinzufügen eines Kontrollpunktes</button>
+	<button>Verschieben eines Kontrollpunktes</button>
+	<button>Entfernen eines Kontrollpunktes</button>
 </body>
 </html>
