@@ -29,6 +29,7 @@ input[type="number"]{
     font-size:18px;
     background-color: #338eb6;
     color: #ffffff;
+    -moz-appearance: textfield;
 }
 
 button{

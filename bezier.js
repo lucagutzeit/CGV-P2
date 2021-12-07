@@ -2,7 +2,7 @@ var canvas;
 var ctx;
 var t = 0.5 ;
 
-var control_points
+var control_points = [];
 const max_bezier_depth = 10;    // max recursion depth -> 2^depth segments
 const initial_num_points = 4;    
 const line_width = 3;
@@ -155,13 +155,31 @@ function resetCanvas() {
     }
 }
 
+function mouseDown(event) {
+    var checked = document.querySelector('input[name="mouse_mode"]:checked').value;
+
+    if(checked === "move") {
+        console.log('move checked')
+        //LG
+
+    } else if (checked === "remove") {
+        console.log('remove checked');
+        //SB
+
+    } else if (checked === "add") {
+        console.log('add checked');
+        //AK
+
+    }
+}
+
 window.addEventListener('load', function () {
     canvas = document.getElementById('beziers');
     // check for browser support
     if (canvas && canvas.getContext) {
         canvas.width = document.body.clientWidth; 
         ctx = canvas.getContext('2d');
-        canvas.addEventListener('mousedown', drawWithNewPoints, false);
+        canvas.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('resize', resizer, false);
         if (ctx) {
             drawWithNewPoints();
