@@ -3,7 +3,7 @@ var ctx;
 var t = 0.5 ;
 
 var control_points = [];
-const max_bezier_depth = 6;    // max recursion depth -> 2^depth segments
+const max_bezier_depth = 20;    // max recursion depth -> 2^depth segments
 const initial_num_points = 4;    
 const line_width = 3;
 const point_size = 8;
@@ -16,6 +16,10 @@ const dash_line = '#171214';
 const orange_line = '#FBA860';
 const pink_line = '#ED33B9';
 const isDrawSupport=true;
+
+var isMouseDown = false;
+var isMouseMove = false;
+var indexOfSelectedPoint = -1;
 
 class P {
     constructor(x, y) {
@@ -65,7 +69,6 @@ function drawSupportLines(point_layers) {
     }
 }
 
-
 function draw(points) {
     if(ctx) {
         resetCanvas();
@@ -103,6 +106,7 @@ function distance(A, B){
     var difY = Math.abs(A.y - B.y);
     return Math.sqrt(difX * difX + difY * difY);
 }
+
 function bezier (points, depth) {
     var point_layers = Array(points.length);
     if(depth === 0 || distance(points[0], points[points.length-1]) < 2) {
@@ -161,12 +165,37 @@ function resetCanvas() {
     }
 }
 
+function indexOfPoint(x, y) {
+    for(var i=0; i<control_points.length; i++) {
+        let point = control_points[i];
+        if(
+            x <=point.x+(point_size/2)
+            && x >= point.x - (point_size/2)
+            && y <= point.y + (point_size/2)
+            && y >= point.y - (point_size/2)
+        ) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 function mouseDown(event) {
     var checked = document.querySelector('input[name="mouse_mode"]:checked').value;
 
+    var position = canvas.getBoundingClientRect();
+
+    var index = indexOfPoint(event.x-position.x, event.y-position.y);
+
+    if(index !== -1) {
+        indexOfSelectedPoint = index;
+    }
+
     if(checked === "move") {
-        console.log('move checked')
+        console.log('move checked');
         //LG
+        isMouseDown = true;
 
     } else if (checked === "remove") {
         console.log('remove checked');
@@ -179,6 +208,20 @@ function mouseDown(event) {
     }
 }
 
+function handleMouseUp(event) {
+    isMouseDown = false;
+    indexOfSelectedPoint = -1
+}
+
+function handleMouseMove(event) {
+    if(isMouseDown && indexOfSelectedPoint !== -1) {
+        var position = canvas.getBoundingClientRect();
+        control_points[indexOfSelectedPoint] = new P(event.x-position.x, event.y-position.y);
+        draw(control_points);
+    }
+    
+}
+
 window.addEventListener('load', function () {
     canvas = document.getElementById('beziers');
     // check for browser support
@@ -186,6 +229,8 @@ window.addEventListener('load', function () {
         canvas.width = document.body.clientWidth; 
         ctx = canvas.getContext('2d');
         canvas.addEventListener('mousedown', mouseDown, false);
+        canvas.addEventListener('mouseup', handleMouseUp, false);
+        canvas.addEventListener('mousemove', handleMouseMove, false);
         window.addEventListener('resize', resizer, false);
         if (ctx) {
             drawWithNewPoints();
