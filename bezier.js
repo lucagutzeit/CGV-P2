@@ -3,7 +3,7 @@ var ctx;
 var t = 0.5 ;
 
 var control_points = [];
-const max_bezier_depth = 10;    // max recursion depth -> 2^depth segments
+const max_bezier_depth = 6;    // max recursion depth -> 2^depth segments
 const initial_num_points = 4;    
 const line_width = 3;
 const point_size = 8;
@@ -98,10 +98,16 @@ function line (P0, P1, width = line_width, color=line_color, segments=[]) {
     ctx.stroke();
 }
 
+function distance(A, B){
+    var difX = Math.abs(A.x - B.x);
+    var difY = Math.abs(A.y - B.y);
+    return Math.sqrt(difX * difX + difY * difY);
+}
 function bezier (points, depth) {
     var point_layers = Array(points.length);
-    if(depth === 0 || Math.sqrt(points[0] - points[points.length-1]) < 2) {
+    if(depth === 0 || distance(points[0], points[points.length-1]) < 2) {
         line(points[0], points[points.length-1]);
+        console.log('Exited at depth ' + depth);
     } else {
         point_layers[0] = points; 
 
