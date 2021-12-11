@@ -4,7 +4,7 @@ var t = 0.5 ;
 
 var control_points = [];
 const max_bezier_depth = 20;    // max recursion depth -> 2^depth segments
-const initial_num_points = 6;    
+const initial_num_points = 4;    
 const line_width = 3;
 const point_size = 8;
 const back_color = '#FDFDFD';
@@ -111,7 +111,7 @@ function bezier (points, depth) {
     var point_layers = Array(points.length);
     if(depth === 0 || distance(points[0], points[points.length-1]) < 2) {
         line(points[0], points[points.length-1]);
-        console.log('Exited at depth ' + depth);
+        //console.log('Exited at depth ' + depth);
     } else {
         point_layers[0] = points; 
 
@@ -177,7 +177,6 @@ function indexOfPoint(x, y) {
             return i;
         }
     }
-
     return -1;
 }
 
@@ -188,7 +187,7 @@ function mouseDown(event) {
 
     var index = indexOfPoint(event.x-position.x, event.y-position.y);
 
-    if(index !== -1) {
+    if(index != -1) {
         indexOfSelectedPoint = index;
     }
 
@@ -199,8 +198,8 @@ function mouseDown(event) {
 
     } else if (checked === "remove") {
         console.log('remove checked');
-        console.log(index);
-        if(control_points.length> 2){
+        console.log(indexOfSelectedPoint);
+        if(control_points.length> 2 && indexOfSelectedPoint != -1){
             control_points.splice(indexOfSelectedPoint, 1);
             draw(control_points)
         }
