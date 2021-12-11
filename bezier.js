@@ -4,7 +4,7 @@ var t = 0.5 ;
 
 var control_points = [];
 const max_bezier_depth = 20;    // max recursion depth -> 2^depth segments
-const initial_num_points = 4;    
+const initial_num_points = 6;    
 const line_width = 3;
 const point_size = 8;
 const back_color = '#FDFDFD';
@@ -199,6 +199,11 @@ function mouseDown(event) {
 
     } else if (checked === "remove") {
         console.log('remove checked');
+        console.log(index);
+        if(control_points.length> 2){
+            control_points.splice(indexOfSelectedPoint, 1);
+            draw(control_points)
+        }
         //SB
 
     } else if (checked === "add") {
