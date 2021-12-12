@@ -210,12 +210,14 @@ function mouseDown(event) {
             control_points.splice(indexOfSelectedPoint, 1);
             draw(control_points)
         }
-        //SB
-
+        
     } else if (checked === "add") {
         console.log('add checked');
-        //AK
-
+        console.log('add checked');
+        var position = canvas.getBoundingClientRect();
+        control_points.push(new P(event.x-position.x, event.y-position.y));
+        console.log(control_points);
+        draw(control_points);
     }
 }
 
