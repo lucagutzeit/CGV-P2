@@ -60,6 +60,10 @@ function getRandomPoints(num_points) {
 }
 
 function drawSupportLines(point_layers) {
+    if (point_layers.length <= 1) {
+        return;
+    }
+
     for(var i=0; i<point_layers.length; i++) {
         for(var j=0; j<point_layers[i].length-1; j++) {
             line(point_layers[i][j], point_layers[i][j+1], 1, dash_line, [5]);
@@ -108,6 +112,10 @@ function distance(A, B){
 }
 
 function bezier (points, depth) {
+    if (points.length < 2) {
+        return [];
+    }
+
     var point_layers = Array(points.length);
     if(depth === 0 || distance(points[0], points[points.length-1]) < 2) {
         line(points[0], points[points.length-1]);
@@ -193,13 +201,12 @@ function mouseDown(event) {
 
     if(checked === "move") {
         console.log('move checked');
-        //LG
         isMouseDown = true;
 
     } else if (checked === "remove") {
         console.log('remove checked');
         console.log(indexOfSelectedPoint);
-        if(control_points.length> 2 && indexOfSelectedPoint != -1){
+        if(indexOfSelectedPoint != -1){
             control_points.splice(indexOfSelectedPoint, 1);
             draw(control_points)
         }
