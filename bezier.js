@@ -112,37 +112,35 @@ function distance(A, B){
 }
 
 function bezier (points, depth) {
+    var point_layers = Array(points.length);
+    var new_points_left = Array(points.length);
+    var new_points_right = Array(points.length);
+
     if (points.length < 2) {
         return [];
     }
 
-    var point_layers = Array(points.length);
-    if(depth === 0 || distance(points[0], points[points.length-1]) < 2) {
+    if((depth === 0 || distance(points[0], points[points.length-1]) < 2) 
+        && max_bezier_depth - depth > 0) {
         line(points[0], points[points.length-1]);
-        //console.log('Exited at depth ' + depth);
+        //console.log('Exited at depth ' + (max_bezier_depth - depth));
     } else {
         point_layers[0] = points; 
-
-        for(var i=1; i<point_layers.length; i++) {
-            point_layers[i] = Array(points.length-i);
-        }
+        new_points_left[0] = points[0];
+        new_points_right[new_points_right.length-1] = points[points.length-1];
 
         for (var i = 1; i<points.length; i++){
+            point_layers[i] = Array(points.length-i);
             for(var j = 0; j<points.length-i; j++) {
                 let pointA = point_layers[i-1][j];
                 let pointB = point_layers[i-1][j+1]
 
                 point_layers[i][j] = new P((t*pointA.x+(1-t)*pointB.x), (t*pointA.y+(1-t)*pointB.y));
             }
-        }
-
-        var new_points_left = Array(points.length);
-        var new_points_right = Array(points.length);
-        
-        for(var k = 0; k < points.length; k++) {
-            new_points_left[k] = point_layers[k][0];
-            new_points_right[new_points_right.length-1-k] = point_layers[k][point_layers[k].length-1];
-        }				
+            
+            new_points_left[i] = point_layers[i][0];
+            new_points_right[new_points_right.length-1-i] = point_layers[i][point_layers[i].length-1];
+        }			
 
         bezier(new_points_left, depth-1);
         bezier(new_points_right, depth-1);
