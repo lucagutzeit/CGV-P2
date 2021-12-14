@@ -111,6 +111,19 @@ function distance(A, B){
     return Math.sqrt(difX * difX + difY * difY);
 }
 
+function isCluster(points) {
+    for(var i=0; i<points.length-1; i++) {
+        if(distance(points[i], points[i+1]) > 1) {
+            return false;
+        }
+    }
+    if(distance(points[0], points[points.length-1]) > 1) {
+        return false;
+    }
+
+    return true;
+}
+
 function bezier (points, depth) {
     var point_layers = Array(points.length);
     var new_points_left = Array(points.length);
@@ -120,10 +133,10 @@ function bezier (points, depth) {
         return [];
     }
 
-    if((depth === 0 || distance(points[0], points[points.length-1]) < 2) 
-        && max_bezier_depth - depth > 0) {
+    if(depth === 0 || isCluster(points)) {
         line(points[0], points[points.length-1]);
-        //console.log('Exited at depth ' + (max_bezier_depth - depth));
+        console.log('Exited at depth ' + (max_bezier_depth - depth));
+        return [];
     } else {
         point_layers[0] = points; 
         new_points_left[0] = points[0];
